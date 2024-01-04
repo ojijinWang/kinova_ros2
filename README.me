@@ -1,0 +1,28 @@
+# Important
+
+This repository contains personal modified code to support Mico2, Mico3, (Jaco, Jaco2 are not tested) in ROS2.
+
+This original repository of kinova arms is at the [ros_kortex repository](https://github.com/Kinovarobotics/kinova-ros)
+
+# Supported versions
+
+The master branch has been tested with ROS Humble
+
+# install other packges
+```
+sudo apt-get install ros-humble-angles ros-humble-tf2-geometry-msgs ros-humble-control-msgs ros-humble-sensor-msgs ros-humble-interactive-markers
+```
+
+## Installation
+Download and copy the pkg into ros2_ws/src and "colcon build --symlink-install"
+
+To access the arm via usb copy the udev rule file `10-kinova-arm.rules` from `~/catkin_ws/src/kinova-ros/kinova_driver/udev` to `/etc/udev/rules.d/`:
+```
+cd ~catkin_ws/src/kinova_ros2/
+sudo cp ~/ros2_ws/src/kinova_ros2/kinova_driver/udev/10-kinova-arm.rules /etc/udev/rules.d/
+```
+
+## How to use the stack
+```
+ros2 launch kinova_bringup_ros2 kinova_robot_m1n6s300.launch 
+```
