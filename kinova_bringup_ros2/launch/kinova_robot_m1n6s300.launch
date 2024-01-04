@@ -1,0 +1,42 @@
+<launch>
+
+    <arg name="kinova_robotType" default="m1n6s300" />
+    <arg name="kinova_robotName" default="m1n6s300"/>
+    <arg name="kinova_robotSerial" default="not_set" />
+    <arg name="use_jaco_v1_fingers" default="false" />
+    <arg name="feedback_publish_rate" default="0.1" />
+
+    <!--the kinova driver-->
+    <node name="$(var kinova_robotName)_driver" pkg="kinova_driver_ros2" exec="kinova_arm_driver" output="screen">
+        <param name="serial_number"             value="$(var kinova_robotSerial)" />   
+        <param name="robot_name"                value="$(var kinova_robotName)" />
+        <param name="robot_type"                value="$(var kinova_robotType)" />
+        <param name="use_jaco_v1_fingers"       value="$(var use_jaco_v1_fingers)" />   
+        <param name="status_interval_seconds"   value="$(var feedback_publish_rate)" />
+        <param name="connection_type"           value="USB" />
+        <param name="jointSpeedLimitParameter1" value="10.0" />
+        <param name="jointSpeedLimitParameter2" value="20.0" />
+    </node>
+
+    <!-- a node that adds a joint "root" the list-->
+    <node name="$(var kinova_robotName)_tf_updater" pkg="kinova_driver_ros2" exec="kinova_tf_updater" output="screen">
+        <remap from="/$(var kinova_robotName)_tf_updater/in/joint_angles" to="/$(var kinova_robotName)_driver/out/joint_angles"/>
+        <param name="robot_type"                value="$(var kinova_robotType)" />
+        <param name="base_frame"                value="root"/>
+    </node>
+
+    <!-- generate the "joint state" from "joint angle" and "robot_description"-->
+    <arg name="model_file_address" default="$(find-pkg-share kinova_description_ros2)/urdf/$(var kinova_robotName)_standalone.xacro"/>
+    <arg name="robot_description" default="$(command 'xacro $(var model_file_address)')"/>
+    <node name="$(var kinova_robotName)_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher">
+        <remap from="joint_states" to="/$(var kinova_robotName)_driver/out/joint_state"/>
+        <param name="robot_description" value="$(var robot_description)"/>
+    </node>
+
+    <!-- rviz2 -->
+    <arg name="rviz_file_address" default="$(find-pkg-share kinova_description_ros2)/rviz/rviz_config.rviz" />
+    <node name="rviz2" pkg="rviz2" exec="rviz2" args="-d $(var rviz_file_address)">
+        <param name="robot_description" value="$(var robot_description)"/>
+    </node>
+
+</launch>

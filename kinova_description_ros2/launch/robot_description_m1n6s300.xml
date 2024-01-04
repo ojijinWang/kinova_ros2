@@ -1,0 +1,26 @@
+<launch>
+
+    <arg name="model_file_address" default="$(find-pkg-share kinova_description_ros2)/urdf/m1n6s300_standalone.xacro"/>
+    <arg name="rviz_file_address" default="$(find-pkg-share kinova_description_ros2)/rviz/rviz_config.rviz" />
+    
+    <arg name="robot_description" default="$(command 'xacro $(var model_file_address)')"/>
+
+    <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" name="joint_state_publisher_gui" output="screen">
+        <remap from="joint_states" to="joint_states"/>
+        <param name="robot_description" value="$(var robot_description)"/>
+        </node>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher" output="screen">
+        <remap from="joint_states" to="joint_states"/>
+        <param name="robot_description" value="$(var robot_description)"/>
+    </node>
+    
+    <!--<node pkg="joint_state_publisher" exec="joint_state_publisher">
+        <param name="source_list" value="[joint_states, joint_state_broadcaster/joint_states]"/>
+    </node>-->
+
+    <node name="rviz2" pkg="rviz2" exec="rviz2" args="-d $(var rviz_file_address)">
+        <param name="robot_description" value="$(var robot_description)"/>
+    </node>
+        
+
+</launch>
