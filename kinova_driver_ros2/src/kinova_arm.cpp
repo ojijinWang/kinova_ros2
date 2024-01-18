@@ -221,7 +221,7 @@ KinovaArm::KinovaArm(KinovaComm &arm, const std::shared_ptr<rclcpp::Node> &nodeH
     joint_torque_publisher_ = node_handle_->create_publisher<kinova_msgs_ros2::msg::JointAngles>
             (name_ + "out/joint_torques", 2);
     joint_state_publisher_ = node_handle_->create_publisher<sensor_msgs::msg::JointState>
-            (name_ + "out/joint_state", 2);
+            (name_ + "out/joint_states", 2);
     tool_position_publisher_ = node_handle_->create_publisher<geometry_msgs::msg::PoseStamped>
             (name_ + "out/tool_pose", 2);
     tool_wrench_publisher_ = node_handle_->create_publisher<geometry_msgs::msg::WrenchStamped>
