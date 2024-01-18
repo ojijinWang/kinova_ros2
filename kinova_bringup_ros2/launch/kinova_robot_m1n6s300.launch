@@ -29,7 +29,7 @@
     <arg name="model_file_address" default="$(find-pkg-share kinova_description_ros2)/urdf/$(var kinova_robotName)_standalone.xacro"/>
     <arg name="robot_description" default="$(command 'xacro $(var model_file_address)')"/>
     <node name="$(var kinova_robotName)_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher">
-        <remap from="joint_states" to="/$(var kinova_robotName)_driver/out/joint_state"/>
+        <remap from="joint_states" to="/$(var kinova_robotName)_driver/out/joint_states"/>
         <param name="robot_description" value="$(var robot_description)"/>
     </node>
 
